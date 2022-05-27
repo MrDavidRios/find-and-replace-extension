@@ -1,0 +1,136 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@500&family=Reem+Kufi&display=swap');
+
+body {
+	width: 275px;
+	height: 300px;
+	max-height: 300px;
+
+	display: grid;
+	grid-template-rows: 35px auto 30px;
+
+	border-radius: 5px;
+
+	text-align: center;
+
+	background-color: rgb(25, 25, 25);
+
+	color: #cbcbcb;
+
+	font-family: 'Open Sans', sans-serif;
+}
+
+#dictContainer {
+	overflow-y: auto;
+	margin: 25px 10px 10px 10px;
+}
+
+#replaceDict {
+	display: grid;
+	justify-content: center;
+}
+
+#controlBar {
+	width: 100%;
+
+	text-align: center;
+}
+
+#replacePhrasesButton {
+	width: 130px;
+	height: 25px;
+
+	cursor: pointer;
+
+	border-radius: 15px;
+	border: none;
+	outline: none;
+
+	font-family: 'Reem Kufi', sans-serif;
+}
+
+#replacePhrasesButton:hover {
+	background-color: #d6d6d6;
+}
+
+#replacePhrasesButton:active {
+	transform: translateY(1px);
+}
+
+.std-button {
+	width: 25px;
+	height: 25px;
+
+	transition: 0.3s all;
+
+	cursor: pointer;
+	user-select: none;
+}
+
+.std-button:hover {
+	margin-bottom: 2px;
+}
+
+/* Add Entry Button */
+#addEntryButton {
+	filter: invert(43%) sepia(83%) saturate(6416%) hue-rotate(112deg) brightness(109%) contrast(98%);
+
+	position: absolute;
+	left: 10px;
+	bottom: 13px;
+}
+
+/* Reset Defaults Button */
+#resetDefaultsButton {
+	position: absolute;
+	right: 10px;
+	bottom: 13px;
+}
+
+.input-row {
+	display: grid;
+	grid-template-columns: 25px 85px 85px 35px;
+	grid-template-rows: 25px;
+	align-items: center;
+	overflow: hidden;
+
+	margin-bottom: 5px;
+}
+
+.remove-btn {
+	color: #b50000;
+
+	width: 20px;
+	margin-left: 10px;
+
+	filter: invert(14%) sepia(73%) saturate(4690%) hue-rotate(355deg) brightness(81%) contrast(116%);
+
+	cursor: pointer;
+	user-select: none;
+}
+
+.remove-btn:hover {
+	filter: invert(11%) sepia(83%) saturate(6145%) hue-rotate(358deg) brightness(116%) contrast(116%);
+}
+
+.remove-btn:active {
+	transform: translateY(1px);
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+	width: 10px;
+}
+
+::-webkit-scrollbar-track {
+	background: #2f2f2f;
+	border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb {
+	background: rgb(92, 92, 92);
+	border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+	background: rgb(126, 126, 126);
+}

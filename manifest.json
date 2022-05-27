@@ -1,0 +1,14 @@
+{
+	"name": "Text Helper",
+	"description": "Helps make your text-editing workflow more seamless. Currently only developed for Google Docs.",
+	"version": "1.0",
+	"manifest_version": 3,
+	"background": {
+		"service_worker": "background.js"
+	},
+	"permissions": ["storage", "tabs", "scripting"],
+	"action": {
+		"default_popup": "popup.html"
+	},
+	"host_permissions": ["https://docs.google.com/*", "http://docs.google.com/*"]
+}
