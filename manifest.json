@@ -10,5 +10,9 @@
 	"action": {
 		"default_popup": "popup.html"
 	},
-	"host_permissions": ["https://docs.google.com/*", "http://docs.google.com/*"]
+	"host_permissions": ["https://docs.google.com/*", "http://docs.google.com/*"],
+	"icons": {
+		"48": "icons/icon48.png",
+		"128": "icons/icon128.png"
+	}
 }

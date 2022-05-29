@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@500&family=Reem+Kufi&display=swap');
 
 body {
-	width: 275px;
+	width: 280px;
 	height: 300px;
 	max-height: 300px;
 
@@ -12,7 +12,7 @@ body {
 
 	text-align: center;
 
-	background-color: rgb(25, 25, 25);
+	background-color: #1c202a;
 
 	color: #cbcbcb;
 
@@ -27,6 +27,7 @@ body {
 #replaceDict {
 	display: grid;
 	justify-content: center;
+	padding-top: 5px;
 }
 
 #controlBar {
@@ -89,9 +90,8 @@ body {
 .input-row {
 	display: grid;
 	grid-template-columns: 25px 85px 85px 35px;
-	grid-template-rows: 25px;
+	column-gap: 10px;
 	align-items: center;
-	overflow: hidden;
 
 	margin-bottom: 5px;
 }
@@ -100,7 +100,6 @@ body {
 	color: #b50000;
 
 	width: 20px;
-	margin-left: 10px;
 
 	filter: invert(14%) sepia(73%) saturate(4690%) hue-rotate(355deg) brightness(81%) contrast(116%);
 
@@ -133,4 +132,23 @@ body {
 
 ::-webkit-scrollbar-thumb:hover {
 	background: rgb(126, 126, 126);
+}
+
+input:not([type='checkbox']) {
+	background-color: #303747;
+	color: #cbcbcb;
+	outline: none;
+	border: none;
+	border-radius: 7px;
+	height: 22px;
+	padding: 3px;
+	padding-left: 8px;
+}
+
+input:not([type='checkbox']):focus {
+	outline: 1px solid rgb(0, 117, 123);
+}
+
+input[type='checkbox'] {
+	background-color: rgb(0, 117, 123);
 }
