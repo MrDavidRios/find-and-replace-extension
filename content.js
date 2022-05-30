@@ -11,6 +11,12 @@ chrome.storage.sync.get('currentURL', (data) => {
 			'input[aria-labelledby*="findLabel"]',
 			'input[aria-labelledby*="replaceLabel"]',
 			'button[name="replaceAll"]'
+		),
+		slides: new KeyElements(
+			'div.docs-findandreplacedialog span.modal-dialog-title-close',
+			'#docs-findandreplacedialog-input',
+			'#docs-findandreplacedialog-replace-input',
+			'#docs-findandreplacedialog-button-replace-all'
 		)
 	};
 
@@ -21,8 +27,9 @@ chrome.storage.sync.get('currentURL', (data) => {
 
 	if (url.includes('docs.google.com')) site = 'docs';
 	if (url.includes('docs.google.com/spreadsheets/')) site = 'sheets';
+	if (url.includes('docs.google.com/presentation/')) site = 'slides';
 
-	if (url.includes('docs.google.com') || url.includes('sheets.google.com')) {
+	if (url.includes('docs.google.com')) {
 		const focusWindow = window.open('');
 		focusWindow.close();
 
@@ -61,7 +68,7 @@ async function replaceValuesOnGoogleService(valueToReplace, replacementValue, si
 		//Put the value to be replaced in the 'find' input field
 		findInput.value = valueToReplace;
 
-		if (site == 'docs') {
+		if (site == 'docs' || site == 'slides') {
 			clickElement(replaceMenuCloseButton);
 			openReplaceAllMenu();
 
