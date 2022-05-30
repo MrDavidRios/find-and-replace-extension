@@ -60,25 +60,38 @@ async function replaceValuesOnGoogleService(valueToReplace, replacementValue, si
 			//Put the value to be replaced in the 'find' input field
 			findInput.value = valueToReplace;
 
-			//This quickly closes and re-opens the menu, making sure that the 'Replace All' button is enabled
-			clickElement(replaceMenuCloseButton);
-			openReplaceAllMenu();
+			if (site == 'docs') {
+				clickElement(replaceMenuCloseButton);
+				openReplaceAllMenu();
+			}
 
 			setTimeout(() => {
-				//Put the replacement value in the 'replace with' input field
-				replaceInput.value = replacementValue;
+				replaceInput.click();
+				replaceInput.focus();
 
-				//Click the 'replace all' button
-				clickElement(replaceAllButton);
+				setTimeout(() => {
+					//Put the replacement value in the 'replace with' input field
+					replaceInput.value = replacementValue;
 
-				//Reset input fields
-				findInput.value = '';
-				replaceInput.value = '';
+					if (site == 'sheets') {
+						document.querySelector('div.waffle-find-replace-dialog').click();
+						document.querySelector('div.waffle-find-replace-dialog').focus();
+					}
 
-				//Close Menu
-				clickElement(replaceMenuCloseButton);
+					setTimeout(() => {
+						//Click the 'replace all' button
+						clickElement(replaceAllButton);
 
-				resolve();
+						//Reset input fields
+						findInput.value = '';
+						replaceInput.value = '';
+
+						//Close Menu
+						clickElement(replaceMenuCloseButton);
+
+						resolve();
+					}, advanceInterval);
+				}, advanceInterval);
 			}, advanceInterval);
 		}, advanceInterval);
 	});

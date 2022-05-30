@@ -74,10 +74,10 @@ chrome.storage.sync.get('replacementPhrases', (data) => {
 
 function setupAutosaveListeners() {
 	document.querySelectorAll('input').forEach((input) => {
-		input.addEventListener('focusout', () => {
-			const idx = parseInt(input.getAttribute('idx'));
-			const replType = input.getAttribute('replType');
+		const idx = parseInt(input.getAttribute('idx'));
+		const replType = input.getAttribute('replType');
 
+		input.addEventListener('focusout', () => {
 			replacementPhrases[idx][replType] = input.value;
 
 			saveReplacementPhrases();

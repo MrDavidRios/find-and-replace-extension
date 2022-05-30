@@ -35,8 +35,6 @@ var simulateMouseEvent = function (element, eventName, coordX, coordY) {
 
 //Adds support for Macs (metaKey). Did not feel like it was worth OS checking
 function openReplaceAllMenu() {
-	console.log('here');
-
 	//Non-Mac operating systems
 	const openReplaceAllMenu = new KeyboardEvent('keydown', { key: 'h', ctrlKey: true, bubbles: true });
 	document.body.dispatchEvent(openReplaceAllMenu);
