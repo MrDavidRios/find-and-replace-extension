@@ -1,7 +1,7 @@
 {
 	"name": "Text Helper",
-	"description": "Helps make your text-editing workflow more seamless. Currently only developed for Google Docs.",
-	"version": "1.0.0",
+	"description": "Helps make your text-editing workflow more seamless. Currently only developed for Google Docs & Sheets.",
+	"version": "1.0.1",
 	"manifest_version": 3,
 	"background": {
 		"service_worker": "background.js"
