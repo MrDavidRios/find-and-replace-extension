@@ -57,6 +57,10 @@ body {
 	transform: translateY(1px);
 }
 
+#replacePhrasesButton:focus {
+	outline: 3px solid rgb(0, 242, 255);
+}
+
 .std-button {
 	width: 25px;
 	height: 25px;

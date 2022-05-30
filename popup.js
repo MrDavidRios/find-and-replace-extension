@@ -15,7 +15,7 @@ replacePhrasesButton.addEventListener('click', async () => {
 
 	chrome.scripting.executeScript({
 		target: { tabId: tab.id },
-		files: ['content.js']
+		files: ['content.js', 'docs.js']
 	});
 });
 
@@ -33,6 +33,10 @@ resetDefaultsButton.addEventListener('click', () => {
 	updateInputs();
 });
 
+resetDefaultsButton.addEventListener('keypress', (e) => {
+	if (e.key === 'Enter') resetDefaultsButton.click();
+});
+
 addEntryButton.addEventListener('click', () => {
 	//If last input row is empty, don't allow adding.
 	const lastToReplaceInput = document.querySelector(`input[idx="${replacementPhrases.length - 1}"]:not([type="checkbox"])`);
@@ -44,6 +48,10 @@ addEntryButton.addEventListener('click', () => {
 	replacementPhrases[replacementPhrases.length - 1]['replaceWith'] = lastReplaceWithInput.value;
 
 	if (lastToReplaceInput.value != '') addInputRow();
+});
+
+addEntryButton.addEventListener('keypress', (e) => {
+	if (e.key === 'Enter') addEntryButton.click();
 });
 
 //Load saved repacement phrases from storage
@@ -80,8 +88,6 @@ function setupAutosaveListeners() {
 function setupDeleteButtonsAndCheckboxes() {
 	document.querySelectorAll('.remove-btn').forEach((removeBtn) => {
 		removeBtn.addEventListener('click', () => {
-			console.log('remove button clicked!');
-
 			if (replacementPhrases.length == 1) addInputRow();
 
 			const siblingInput = removeBtn.parentElement.querySelector('input');
@@ -93,6 +99,10 @@ function setupDeleteButtonsAndCheckboxes() {
 
 			saveReplacementPhrases();
 			updateInputs();
+		});
+
+		removeBtn.addEventListener('keypress', (e) => {
+			if (e.key === 'Enter') removeBtn.click();
 		});
 	});
 
@@ -152,7 +162,7 @@ function createInputRow(i, toReplace, replaceWith) {
 
 	htmlString += `<input type="checkbox" idx="${i}" title="Toggle Replacement">`;
 	htmlString += `<input replType="toReplace" idx="${i}" value="${toReplace}" placeholder="Find"> <input replType="replaceWith" idx="${i}" value="${replaceWith}" placeholder="Replace">`;
-	htmlString += '<img class="remove-btn" title="Remove Entry" src="./img/delete.svg">';
+	htmlString += '<img class="remove-btn" tabindex="0" title="Remove Entry" src="./img/delete.svg">';
 	htmlString += '</div>';
 
 	return htmlString;
