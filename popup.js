@@ -15,7 +15,7 @@ replacePhrasesButton.addEventListener('click', async () => {
 
 	chrome.scripting.executeScript({
 		target: { tabId: tab.id },
-		files: ['content.js', 'docs.js']
+		files: ['content.js', 'utils.js']
 	});
 });
 

@@ -35,6 +35,8 @@ var simulateMouseEvent = function (element, eventName, coordX, coordY) {
 
 //Adds support for Macs (metaKey). Did not feel like it was worth OS checking
 function openReplaceAllMenu() {
+	console.log('opening find & replace menu...');
+
 	//Non-Mac operating systems
 	const openReplaceAllMenu = new KeyboardEvent('keydown', { key: 'h', ctrlKey: true, bubbles: true });
 	document.body.dispatchEvent(openReplaceAllMenu);
@@ -42,4 +44,8 @@ function openReplaceAllMenu() {
 	//MacOS
 	const openReplaceAllMenuMac = new KeyboardEvent('keydown', { key: 'h', metaKey: true, bubbles: true });
 	document.body.dispatchEvent(openReplaceAllMenuMac);
+}
+
+function sleep(ms) {
+	return new Promise((resolve) => setTimeout(resolve, ms));
 }
