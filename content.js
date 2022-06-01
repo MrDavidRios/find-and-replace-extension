@@ -28,24 +28,35 @@ chrome.storage.sync.get('currentURL', (data) => {
 	if (url.includes('docs.google.com')) site = 'docs';
 	if (url.includes('docs.google.com/spreadsheets/')) site = 'sheets';
 	if (url.includes('docs.google.com/presentation/')) site = 'slides';
+	if (url.includes('mail.google.com')) site = 'gmail';
 
-	if (url.includes('docs.google.com')) {
+	if (url.includes('docs.google.com') || site == 'gmail') {
 		const focusWindow = window.open('');
 		focusWindow.close();
 
 		chrome.storage.sync.get('replacementPhrases', async (data) => {
 			const replacementPhrases = data['replacementPhrases'];
 
-			console.log(replacementPhrases);
-
 			for (let i = 0; i < replacementPhrases.length; i++) {
 				const phrase = replacementPhrases[i];
 
-				if (phrase['enabled']) await replaceValuesOnGoogleService(phrase.toReplace, phrase.replaceWith, site);
+				if (phrase['enabled']) {
+					if (site != 'gmail') await replaceValuesOnGoogleService(phrase.toReplace, phrase.replaceWith, site);
+					else await replaceValuesOnGmail(phrase.toReplace, phrase.replaceWith);
+				}
 			}
 		});
 	}
 });
+
+async function replaceValuesOnGmail(valueToReplace, replacementValue) {
+	chrome.storage.sync.get('lastSelectedGmailTextboxID', async (data) => {
+		const lastSelectedTextboxID = data['lastSelectedGmailTextboxID'];
+		const lastSelectedTextbox = document.getElementById(lastSelectedTextboxID);
+
+		if (lastSelectedTextbox !== undefined) lastSelectedTextbox.innerHTML = lastSelectedTextbox.innerHTML.replaceAll(valueToReplace, replacementValue);
+	});
+}
 
 async function replaceValuesOnGoogleService(valueToReplace, replacementValue, site) {
 	let advanceInterval = 100; //Advancement interval in ms
@@ -53,8 +64,6 @@ async function replaceValuesOnGoogleService(valueToReplace, replacementValue, si
 	return new Promise(async (resolve) => {
 		//Press Ctrl + H to bring up 'replace all' menu
 		openReplaceAllMenu();
-
-		console.log(valueToReplace, replacementValue);
 
 		//Cache important UI elements from 'replace all' menu
 		const replaceMenuCloseButton = document.querySelector(keyElements[site].replaceMenuCloseButton);

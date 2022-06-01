@@ -42,8 +42,6 @@ addEntryButton.addEventListener('click', () => {
 	const lastToReplaceInput = document.querySelector(`input[idx="${replacementPhrases.length - 1}"]:not([type="checkbox"])`);
 	const lastReplaceWithInput = document.querySelector(`input[idx="${replacementPhrases.length - 1}"][repltype="replaceWith"]`);
 
-	console.log(lastToReplaceInput.value);
-
 	replacementPhrases[replacementPhrases.length - 1]['toReplace'] = lastToReplaceInput.value;
 	replacementPhrases[replacementPhrases.length - 1]['replaceWith'] = lastReplaceWithInput.value;
 
@@ -56,8 +54,6 @@ addEntryButton.addEventListener('keypress', (e) => {
 
 //Load saved repacement phrases from storage
 chrome.storage.sync.get('replacementPhrases', (data) => {
-	//console.log(data);
-
 	if (data['replacementPhrases'] == undefined) updateInputs();
 	else {
 		replacementPhrases = data['replacementPhrases'];
@@ -92,8 +88,6 @@ function setupDeleteButtonsAndCheckboxes() {
 
 			const siblingInput = removeBtn.parentElement.querySelector('input');
 			const idx = parseInt(siblingInput.getAttribute('idx'));
-
-			console.log(siblingInput, replacementPhrases, idx);
 
 			replacementPhrases.splice(idx, 1);
 
@@ -178,8 +172,6 @@ function addInputRow() {
 	dictUI.innerHTML += createInputRow(i, '', '');
 
 	replacementPhrases.push({ toReplace: '', replaceWith: '', enabled: true });
-
-	console.log(replacementPhrases, i);
 
 	updateCheckboxes();
 

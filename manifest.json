@@ -1,11 +1,17 @@
 {
 	"name": "Text Helper",
-	"description": "Helps make your text-editing workflow more seamless. Currently only developed for Google Docs & Sheets.",
-	"version": "1.0.1",
+	"description": "Helps make your text-editing workflow more seamless. Supports Gmail, Google Docs, Sheets, & Slides.",
+	"version": "1.0.2",
 	"manifest_version": 3,
 	"background": {
 		"service_worker": "background.js"
 	},
+	"content_scripts": [
+		{
+			"matches": ["https://mail.google.com/*"],
+			"js": ["textboxselection.js"]
+		}
+	],
 	"permissions": ["storage", "tabs", "scripting"],
 	"action": {
 		"default_popup": "popup.html"
