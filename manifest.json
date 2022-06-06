@@ -1,7 +1,7 @@
 {
 	"name": "Find and Replace",
 	"description": "Helps make your text-editing workflow more seamless. Supports Gmail, Google Docs, Sheets, Forms, & Slides.",
-	"version": "1.0.3",
+	"version": "1.0.2",
 	"manifest_version": 3,
 	"background": {
 		"service_worker": "background.js"
