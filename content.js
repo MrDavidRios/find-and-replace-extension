@@ -22,12 +22,12 @@ chrome.storage.sync.get('currentURL', (data) => {
 
 	const url = data.currentURL;
 
-	//Make sure this code only runs on google docs (for now)
 	let site = '';
 
 	if (url.includes('docs.google.com')) site = 'docs';
 	if (url.includes('docs.google.com/spreadsheets/')) site = 'sheets';
 	if (url.includes('docs.google.com/presentation/')) site = 'slides';
+	if (url.includes('docs.google.com/forms')) site = 'forms';
 	if (url.includes('mail.google.com')) site = 'gmail';
 
 	if (url.includes('docs.google.com') || site == 'gmail') {
@@ -41,8 +41,19 @@ chrome.storage.sync.get('currentURL', (data) => {
 				const phrase = replacementPhrases[i];
 
 				if (phrase['enabled']) {
-					if (site != 'gmail') await replaceValuesOnGoogleService(phrase.toReplace, phrase.replaceWith, site);
-					else await replaceValuesOnGmail(phrase.toReplace, phrase.replaceWith);
+					switch (site) {
+						case 'docs':
+						case 'sheets':
+						case 'slides':
+							await replaceValuesOnGoogleService(phrase.toReplace, phrase.replaceWith, site);
+							break;
+						case 'gmail':
+							await replaceValuesOnGmail(phrase.toReplace, phrase.replaceWith);
+							break;
+						case 'forms':
+							await replaceValuesOnForms(phrase.toReplace, phrase.replaceWith);
+							break;
+					}
 				}
 			}
 		});
@@ -110,5 +121,29 @@ async function replaceValuesOnGoogleService(valueToReplace, replacementValue, si
 		await sleep(advanceInterval * 2);
 
 		resolve();
+	});
+}
+
+async function replaceValuesOnForms(valueToReplace, replacementValue) {
+	const textareas = document.querySelectorAll('textarea');
+
+	for (let i = 0; i < textareas.length; i++) {
+		const textarea = textareas[i];
+
+		textarea.focus();
+
+		await sleep(1000);
+
+		textarea.textContent = textarea.textContent.replaceAll(valueToReplace, replacementValue);
+		textarea.setAttribute('data-initial-value', textarea.textContent);
+
+		textarea.dispatchEvent(new Event('change', { bubbles: true }));
+	}
+
+	document.querySelectorAll('input[type="text"]').forEach((input) => {
+		input.value = input.value.replaceAll(valueToReplace, replacementValue);
+		input.setAttribute('data-initial-value', input.value);
+
+		input.dispatchEvent(new Event('change', { bubbles: true }));
 	});
 }
