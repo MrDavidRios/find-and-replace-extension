@@ -6,6 +6,12 @@
   "background": {
     "service_worker": "background.js"
   },
+  "commands": {
+    "replace-phrases": {
+      "suggested_key": "Alt+R",
+      "description": "Trigger text replacement"
+    }
+  },
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
