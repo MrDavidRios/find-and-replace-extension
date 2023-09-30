@@ -1,20 +1,14 @@
-chrome.runtime.onInstalled.addListener(() => {});
+chrome.runtime.onInstalled.addListener(() => {
+  chrome.contextMenus.create({
+    title: "Replace Phrases",
+    id: "replacePhrasesMenuItem",
+  });
+});
 
-// chrome.tabs.onActivated.addListener((activeInfo) => {
-// 	applyEnhancementScript(activeInfo.tabId);
-// });
+chrome.contextMenus.onClicked.addListener(async (_info, tab) => {
+  await chrome.storage.sync.set({
+    currentURL: tab.url,
+  });
 
-// chrome.tabs.onUpdated.addListener((tabId, info) => {
-// 	if (info.status === 'complete') {
-// 		applyEnhancementScript(tabId);
-// 	}
-// });
-
-// function applyReplacements(tabId) {
-// 	chrome.tabs.get(tabId, async (tab) => {
-// 		chrome.scripting.executeScript({
-// 			target: { tabId: tab.id },
-// 			files: ['content.js']
-// 		});
-// 	});
-// }
+  chrome.tabs.sendMessage(tab.id, { action: "replacePhrases" });
+});
