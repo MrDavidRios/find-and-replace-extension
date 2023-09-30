@@ -1,114 +1,153 @@
-chrome.storage.sync.get('currentURL', (data) => {
-	keyElements = {
-		docs: new KeyElements(
-			'div.docs-findandreplacedialog span.modal-dialog-title-close',
-			'#docs-findandreplacedialog-input',
-			'#docs-findandreplacedialog-replace-input',
-			'#docs-findandreplacedialog-button-replace-all'
-		),
-		sheets: new KeyElements(
-			'div.waffle-find-replace-dialog span.modal-dialog-title-close',
-			'input[aria-labelledby*="findLabel"]',
-			'input[aria-labelledby*="replaceLabel"]',
-			'button[name="replaceAll"]'
-		),
-		slides: new KeyElements(
-			'div.docs-findandreplacedialog span.modal-dialog-title-close',
-			'#docs-findandreplacedialog-input',
-			'#docs-findandreplacedialog-replace-input',
-			'#docs-findandreplacedialog-button-replace-all'
-		)
-	};
-
-	const url = data.currentURL;
-
-	//Make sure this code only runs on google docs (for now)
-	let site = '';
-
-	if (url.includes('docs.google.com')) site = 'docs';
-	if (url.includes('docs.google.com/spreadsheets/')) site = 'sheets';
-	if (url.includes('docs.google.com/presentation/')) site = 'slides';
-	if (url.includes('mail.google.com')) site = 'gmail';
-
-	if (url.includes('docs.google.com') || site == 'gmail') {
-		const focusWindow = window.open('');
-		focusWindow.close();
-
-		chrome.storage.sync.get('replacementPhrases', async (data) => {
-			const replacementPhrases = data['replacementPhrases'];
-
-			for (let i = 0; i < replacementPhrases.length; i++) {
-				const phrase = replacementPhrases[i];
-
-				if (phrase['enabled']) {
-					if (site != 'gmail') await replaceValuesOnGoogleService(phrase.toReplace, phrase.replaceWith, site);
-					else await replaceValuesOnGmail(phrase.toReplace, phrase.replaceWith);
-				}
-			}
-		});
-	}
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  console.log(message);
 });
 
-async function replaceValuesOnGmail(valueToReplace, replacementValue) {
-	chrome.storage.sync.get('lastSelectedGmailTextboxID', async (data) => {
-		const lastSelectedTextboxID = data['lastSelectedGmailTextboxID'];
-		const lastSelectedTextbox = document.getElementById(lastSelectedTextboxID);
+console.log("content script loaded!");
 
-		if (lastSelectedTextbox !== undefined) lastSelectedTextbox.innerHTML = lastSelectedTextbox.innerHTML.replaceAll(valueToReplace, replacementValue);
-	});
+async function replaceValues(replacementPhrases) {
+  console.log("replacing values...");
+
+  chrome.storage.sync.get("currentURL", (data) => {
+    keyElements = {
+      docs: new KeyElements(
+        "div.docs-findandreplacedialog span.modal-dialog-title-close",
+        "#docs-findandreplacedialog-input",
+        "#docs-findandreplacedialog-replace-input",
+        "#docs-findandreplacedialog-button-replace-all"
+      ),
+      sheets: new KeyElements(
+        "div.waffle-find-replace-dialog span.modal-dialog-title-close",
+        'input[aria-labelledby*="findLabel"]',
+        'input[aria-labelledby*="replaceLabel"]',
+        'button[name="replaceAll"]'
+      ),
+      slides: new KeyElements(
+        "div.docs-findandreplacedialog span.modal-dialog-title-close",
+        "#docs-findandreplacedialog-input",
+        "#docs-findandreplacedialog-replace-input",
+        "#docs-findandreplacedialog-button-replace-all"
+      ),
+    };
+
+    const url = data.currentURL;
+
+    let site = "";
+
+    if (url.includes("docs.google.com")) site = "docs";
+    if (url.includes("docs.google.com/spreadsheets/")) site = "sheets";
+    if (url.includes("docs.google.com/presentation/")) site = "slides";
+    if (url.includes("mail.google.com")) site = "gmail";
+
+    if (url.includes("docs.google.com") || site == "gmail") {
+      const focusWindow = window.open("");
+      focusWindow.close();
+
+      chrome.storage.sync.get("replacementPhrases", async (data) => {
+        const replacementPhrases = data["replacementPhrases"];
+
+        replaceValues(replacementPhrases);
+      });
+    }
+  });
+
+  for (let i = 0; i < replacementPhrases.length; i++) {
+    const phrase = replacementPhrases[i];
+
+    if (phrase["enabled"]) {
+      if (site != "gmail")
+        await replaceValuesOnGoogleService(
+          phrase.toReplace,
+          phrase.replaceWith,
+          site
+        );
+      else await replaceValuesOnGmail(phrase.toReplace, phrase.replaceWith);
+    }
+  }
+
+  if (replacementPhrases.length > 0) {
+    switch (site) {
+      case "docs":
+      case "sheets":
+      case "slides":
+        break;
+    }
+  }
 }
 
-async function replaceValuesOnGoogleService(valueToReplace, replacementValue, site) {
-	let advanceInterval = 100; //Advancement interval in ms
+async function replaceValuesOnGmail(valueToReplace, replacementValue) {
+  chrome.storage.sync.get("lastSelectedGmailTextboxID", async (data) => {
+    const lastSelectedTextboxID = data["lastSelectedGmailTextboxID"];
+    const lastSelectedTextbox = document.getElementById(lastSelectedTextboxID);
 
-	return new Promise(async (resolve) => {
-		//Press Ctrl + H to bring up 'replace all' menu
-		openReplaceAllMenu();
+    if (lastSelectedTextbox !== undefined)
+      lastSelectedTextbox.innerHTML = lastSelectedTextbox.innerHTML.replaceAll(
+        valueToReplace,
+        replacementValue
+      );
+  });
+}
 
-		//Cache important UI elements from 'replace all' menu
-		const replaceMenuCloseButton = document.querySelector(keyElements[site].replaceMenuCloseButton);
-		const findInput = document.querySelector(keyElements[site].findInput);
-		const replaceInput = document.querySelector(keyElements[site].replaceInput);
-		const replaceAllButton = document.querySelector(keyElements[site].replaceAllButton);
+async function replaceValuesOnGoogleService(
+  valueToReplace,
+  replacementValue,
+  site
+) {
+  let advanceInterval = 100; //Advancement interval in ms
 
-		//Delay different phases of this procedure by 100ms so that there is enough time for menu elements to be generated by docs
-		await sleep(advanceInterval);
+  return new Promise(async (resolve) => {
+    //Press Ctrl + H to bring up 'replace all' menu
+    openReplaceAllMenu();
 
-		//Put the value to be replaced in the 'find' input field
-		findInput.value = valueToReplace;
+    //Cache important UI elements from 'replace all' menu
+    const replaceMenuCloseButton = document.querySelector(
+      keyElements[site].replaceMenuCloseButton
+    );
+    const findInput = document.querySelector(keyElements[site].findInput);
+    const replaceInput = document.querySelector(keyElements[site].replaceInput);
+    const replaceAllButton = document.querySelector(
+      keyElements[site].replaceAllButton
+    );
 
-		if (site == 'docs' || site == 'slides') {
-			clickElement(replaceMenuCloseButton);
-			openReplaceAllMenu();
+    //Delay different phases of this procedure by 100ms so that there is enough time for menu elements to be generated by docs
+    await sleep(advanceInterval);
 
-			await sleep(advanceInterval);
-		}
+    //Put the value to be replaced in the 'find' input field
+    findInput.value = valueToReplace;
 
-		replaceInput.click();
-		replaceInput.focus();
+    if (site == "docs" || site == "slides") {
+      clickElement(replaceMenuCloseButton);
+      openReplaceAllMenu();
 
-		//Put the replacement value in the 'replace with' input field
-		replaceInput.value = replacementValue;
+      await sleep(advanceInterval);
+    }
 
-		if (site == 'sheets') {
-			const sheetsFindReplaceDialog = document.querySelector('div.waffle-find-replace-dialog');
+    replaceInput.click();
+    replaceInput.focus();
 
-			sheetsFindReplaceDialog.click();
-			sheetsFindReplaceDialog.focus();
-		}
+    //Put the replacement value in the 'replace with' input field
+    replaceInput.value = replacementValue;
 
-		//Click the 'replace all' button
-		clickElement(replaceAllButton);
+    if (site == "sheets") {
+      const sheetsFindReplaceDialog = document.querySelector(
+        "div.waffle-find-replace-dialog"
+      );
 
-		//Reset input fields
-		findInput.value = '';
-		replaceInput.value = '';
+      sheetsFindReplaceDialog.click();
+      sheetsFindReplaceDialog.focus();
+    }
 
-		//Close Menu
-		clickElement(replaceMenuCloseButton);
+    //Click the 'replace all' button
+    clickElement(replaceAllButton);
 
-		await sleep(advanceInterval * 2);
+    //Reset input fields
+    findInput.value = "";
+    replaceInput.value = "";
 
-		resolve();
-	});
+    //Close Menu
+    clickElement(replaceMenuCloseButton);
+
+    await sleep(advanceInterval * 2);
+
+    resolve();
+  });
 }
