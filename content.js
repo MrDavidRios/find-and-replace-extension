@@ -1,5 +1,9 @@
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  if (message.action === "replacePhrases") replaceValues(message.phrases);
+chrome.runtime.onMessage.addListener(async (message) => {
+  const { replacementPhrases } = await chrome.storage.sync.get(
+    "replacementPhrases"
+  );
+
+  if (message.action === "replacePhrases") replaceValues(replacementPhrases);
 });
 
 async function replaceValues(replacementPhrases) {
@@ -18,8 +22,6 @@ async function replaceValues(replacementPhrases) {
 
   for (let i = 0; i < replacementPhrases.length; i++) {
     const phrase = replacementPhrases[i];
-
-    console.log("phrase", phrase);
 
     if (phrase["enabled"]) {
       if (site != "gmail")

@@ -14,10 +14,7 @@ replacePhrasesButton.addEventListener("click", async () => {
     currentURL: activeTab.url,
   });
 
-  chrome.tabs.sendMessage(activeTab.id, {
-    action: "replacePhrases",
-    phrases: replacementPhrases,
-  });
+  chrome.tabs.sendMessage(activeTab.id, { action: "replacePhrases" });
 });
 
 let replacementPhrases = [

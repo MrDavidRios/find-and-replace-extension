@@ -5,7 +5,7 @@ chrome.runtime.onInstalled.addListener(() => {
   });
 });
 
-chrome.contextMenus.onClicked.addListener(async (info, tab) => {
+chrome.contextMenus.onClicked.addListener(async (_info, tab) => {
   await chrome.storage.sync.set({
     currentURL: tab.url,
   });
