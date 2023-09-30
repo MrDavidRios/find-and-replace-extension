@@ -5,18 +5,19 @@ let addEntryButton = document.getElementById("addEntryButton");
 let initialized = false;
 
 replacePhrasesButton.addEventListener("click", async () => {
-  //window.close();
-
   let [activeTab] = await chrome.tabs.query({
     active: true,
     currentWindow: true,
   });
 
-  chrome.storage.sync.set({
+  await chrome.storage.sync.set({
     currentURL: activeTab.url,
   });
 
-  chrome.tabs.sendMessage(activeTab.id, { action: "replacePhrases" });
+  chrome.tabs.sendMessage(activeTab.id, {
+    action: "replacePhrases",
+    phrases: replacementPhrases,
+  });
 });
 
 let replacementPhrases = [
@@ -42,7 +43,7 @@ resetDefaultsButton.addEventListener("keypress", (e) => {
 });
 
 addEntryButton.addEventListener("click", () => {
-  //If last input row is empty, don't allow adding.
+  // If last input row is empty, don't allow adding.
   const lastToReplaceInput = document.querySelector(
     `input[idx="${replacementPhrases.length - 1}"]:not([type="checkbox"])`
   );
@@ -62,7 +63,7 @@ addEntryButton.addEventListener("keypress", (e) => {
   if (e.key === "Enter") addEntryButton.click();
 });
 
-//Load saved repacement phrases from storage
+// Load saved repacement phrases from storage
 chrome.storage.sync.get("replacementPhrases", (data) => {
   if (data["replacementPhrases"] == undefined) updateInputs();
   else {
@@ -73,7 +74,7 @@ chrome.storage.sync.get("replacementPhrases", (data) => {
     updateInputs();
   }
 
-  //This is done later to prevent any accidental data overriding
+  // This is done later to prevent any accidental data overriding
   setupAutosaveListeners();
   setupDeleteButtonsAndCheckboxes();
 });
@@ -167,7 +168,7 @@ function updateCheckboxes() {
   }
 }
 
-//Returns HTML code for an input row.
+// Returns HTML code for an input row.
 function createInputRow(i, toReplace, replaceWith) {
   let htmlString = `<div class='input-row'>`;
 
@@ -180,7 +181,7 @@ function createInputRow(i, toReplace, replaceWith) {
   return htmlString;
 }
 
-//Adds input row using createInputRow().
+// Adds input row using createInputRow().
 function addInputRow() {
   saveReplacementPhrases();
   updateInputs();

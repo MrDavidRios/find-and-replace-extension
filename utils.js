@@ -1,4 +1,4 @@
-//Strings to enter into document.querySelector to get desired elements
+// Strings to enter into document.querySelector to get desired elements
 class KeyElements {
   constructor(
     replaceMenuCloseButton,
@@ -13,16 +13,17 @@ class KeyElements {
   }
 }
 
-//Pulled from StackOverflow: https://stackoverflow.com/questions/51848258/google-docs-programmatically-send-mouse-click-to-an-item-in-outline-pane
-//Thanks to Iván Nokonoko!
+// Pulled from StackOverflow: https://stackoverflow.com/questions/51848258/google-docs-programmatically-send-mouse-click-to-an-item-in-outline-pane
+// Thanks to Iván Nokonoko!
 function clickElement(el) {
   var box = el.getBoundingClientRect(),
     coordX = box.left + (box.right - box.left) / 2,
     coordY = box.top + (box.bottom - box.top) / 2;
 
+  simulateMouseEvent(el, "mouseover", coordX, coordY);
   simulateMouseEvent(el, "mousedown", coordX, coordY);
-  simulateMouseEvent(el, "mouseup", coordX, coordY);
   simulateMouseEvent(el, "click", coordX, coordY);
+  simulateMouseEvent(el, "mouseup", coordX, coordY);
 }
 
 var simulateMouseEvent = function (element, eventName, coordX, coordY) {
@@ -38,9 +39,9 @@ var simulateMouseEvent = function (element, eventName, coordX, coordY) {
   );
 };
 
-//Adds support for Macs (metaKey). Did not feel like it was worth OS checking
+// Adds support for Macs (metaKey). Did not feel like it was worth OS checking
 function openReplaceAllMenu() {
-  //Non-Mac operating systems
+  // Non-Mac operating systems
   const openReplaceAllMenu = new KeyboardEvent("keydown", {
     key: "h",
     ctrlKey: true,
@@ -48,7 +49,7 @@ function openReplaceAllMenu() {
   });
   document.body.dispatchEvent(openReplaceAllMenu);
 
-  //MacOS
+  // MacOS
   const openReplaceAllMenuMac = new KeyboardEvent("keydown", {
     key: "h",
     metaKey: true,

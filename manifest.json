@@ -8,19 +8,19 @@
   },
   "content_scripts": [
     {
-      "matches": ["http://*/", "https://*/"],
-      "js": ["content.js", "utils.js"]
+      "matches": ["<all_urls>"],
+      "js": ["./content.js", "./utils.js"]
     },
     {
       "matches": ["https://mail.google.com/*"],
-      "js": ["textboxselection.js"]
+      "js": ["./textboxselection.js"]
     }
   ],
   "permissions": ["storage", "tabs", "scripting", "contextMenus"],
   "action": {
     "default_popup": "popup.html"
   },
-  "host_permissions": ["http://*/", "https://*/"],
+  "host_permissions": ["http://*/*", "https://*/*"],
   "icons": {
     "48": "icons/icon48.png",
     "128": "icons/icon128.png"
