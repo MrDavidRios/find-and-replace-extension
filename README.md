@@ -1,4 +1,6 @@
 ﻿# Find and Replace
+
+**While this extension is useful in Google Docs, text expanders like [Espanso](https://github.com/espanso/espanso) are generally more useful and work system-wide.**
  
 A Chrome extension that helps save time from having to repetitively copy/paste symbols and phrases.
 
